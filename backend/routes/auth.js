@@ -34,7 +34,8 @@ router.post('/', [
         }).then(user=>res.json(user))
         .catch(err=>console.log(err), res.json({ error:"Please enter a unique value fo email", message: err.message}));
 
-        // res.send({ errors: errors.array() });
+        // res.send({ errors: errors.array() });git remote remove origin
+
     
         // res.send(req.body)
     }) 
