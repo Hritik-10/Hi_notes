@@ -1,7 +1,6 @@
 const express = require('express')
 const User = require('../models/User');
-const { body } = require('express-validator');
-const { query, validationResult } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -22,7 +21,6 @@ router.post('/createuser', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-
     // check if user with same email already exists
     try {
         const userPresent = await User.findOne({ email: req.body.email });
@@ -59,13 +57,11 @@ router.post('/login', [
     body('email', 'Enter  valid email').isEmail(),
     body('password', 'password cannot be blank.').exists(),
 ], async (req, res) => {
-    
     //if there are errors, return bad request and the errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-
     const { email, password } = req.body;
     try {
         const userPresent = await User.findOne({ email });
@@ -83,7 +79,6 @@ router.post('/login', [
         }
         const authToken = jwt.sign(data, JWT_SECRET);
         res.json({ authToken })
-
     } catch (error) {
         res.status(500).send("Internal server error");
     }
@@ -93,18 +88,13 @@ router.post('/login', [
 
 
 //Route 3: get logged in user detail: "/api/auth/getuserdetails". login required
-router.post('/userdetails', fetchuser,  async (req, res) => {
-
-
-    
+router.post('/userdetails', fetchuser,  async (req, res) => {    
     try {
         const userid= req.user.id;
         const user = await User.findById(userid).select("-password"); 
         res.send(user);
         
     } catch (err) {
-        console.log();
-        
         res.status(500).send("Internal server error");
     }
 })
