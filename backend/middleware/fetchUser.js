@@ -6,7 +6,7 @@ const fetchuser = (req,res, next)=>{
 
     const token=req.header('auth-token');
     if(!token){
-        res.send(401).send("Please authenticate with a valid token") 
+        return res.sendStatus(401).send("Please authenticate with a valid token") 
     }
 
     try {
@@ -15,7 +15,7 @@ const fetchuser = (req,res, next)=>{
         next();
         
     } catch (error) {
-         res.send(401).send("Please authenticate with a valid token") 
+         res.sendStatus(401).send("Please authenticate with a valid token") 
     }
 }
 

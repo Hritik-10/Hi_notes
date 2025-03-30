@@ -42,12 +42,10 @@ router.post('/createuser', [
             }
         }
         const authToken = jwt.sign(data, JWT_SECRET);
-        res.json({ authToken })
-
-
-    } catch (err) {
-        // res.status(500).send("Ran into some error");
-        res.status(500).send("Internal server error");
+        res.json({success:true, authToken: authToken })
+        
+    } catch (error) {
+        res.status(500).send({success:false,error: "Internal server error"});
     }
 })
 
@@ -78,9 +76,10 @@ router.post('/login', [
             }
         }
         const authToken = jwt.sign(data, JWT_SECRET);
-        res.json({ authToken })
+        res.json({success:true, authToken: authToken })
+
     } catch (error) {
-        res.status(500).send("Internal server error");
+        res.status(500).send({success:false,error: "Internal server error"});
     }
 }
 )

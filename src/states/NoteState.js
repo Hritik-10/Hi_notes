@@ -4,90 +4,100 @@ import React, { useState } from 'react'
 
 const NoteState = (props) => {
 
-    const intial_notes = [
-      {
-        "_id": "67d556f059f0757defd3684b",
-        "user": "67d530d58df0be8e907bcf5b",
-        "title": "mobile",
-        "description": "8gb 256 gb",
-        "tag": "oneplus",
-        "__v": 0
+  const [notes, setNotes] = useState([]);
+               
+  const fetchAllNotes = async () => {
+    const token = localStorage.getItem("authToken");
+    const resp = await fetch("http://localhost:5000/api/notes/fetchallnotes", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": token
+      }
+    })
+    const initial_notes = await resp.json();
+    setNotes(initial_notes);
+  }
+
+  const addNote = async (title, description, tag) => {
+    //api call to save note-
+    const token = localStorage.getItem("authToken");
+    const response = await fetch("http://localhost:5000/api/notes/addnote", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": token
       },
-      {
-        "_id": "67d55905e42a3f3b2f1660de",
-        "user": "67d530d58df0be8e907bcf5b",
-        "title": "rama",
-        "description": "chinche khali basloy",
-        "tag": "hritik",
-        "__v": 0
-      },
-      {
-        "_id": "67d55905e424tff3b201660de",
-        "user": "67d530d58df0be8e907bcf5b",
-        "title": "rama",
-        "description": "chinche khali basloy",
-        "tag": "hritik",
-        "__v": 0
-      },
-      {
-        "_id": "67d55905e42argey5rtb201660de",
-        "user": "67d530d58df0be8e907bcf5b",
-        "title": "rama",
-        "description": "chinche khali basloy",
-        "tag": "hritik",
-        "__v": 0
-      },
-      {
-        "_id": "67d55905e42,uim3b201660de",
-        "user": "67d530d58df0be8e907bcf5b",
-        "title": "rama",
-        "description": "chinche khali basloy",
-        "tag": "hritik",
-        "__v": 0
-      },
-      {
-        "_id": "67d55905e42a3f3bdvvs1660de",
-        "user": "67d530d58df0be8e907bcf5b",
-        "title": "rama",
-        "description": "chinche khali basloy",
-        "tag": "hritik",
-        "__v": 0
-      },
-      {
-        "_id": "67dvdd5905e42a3f3b201660de",
-        "user": "67d530d58df0be8e907bcf5b",
-        "title": "rama",
-        "description": "chinche khali basloy",
-        "tag": "hritik",
-        "__v": 0
-      },
-      {
-        "_id": "67d55dv905e42a3f3b201660de",
-        "user": "67d530d58df0be8e907bcf5b",
-        "title": "rama",
-        "description": "chinche khali basloy",
-        "tag": "hritik",
+      body: await JSON.stringify({ title, description, tag }),
+    })
+    const data = await response.json();
+    if (response.ok) {
+      const note = {
+        "_id": data._id,
+        "user": data.user,
+        "title": data.title,
+        "description": data.description,
+        "tag": data.tag,
         "__v": 0
       }
-    ]
-    const [notes,setNotes] =useState(intial_notes);
+      setNotes(notes.concat(note));
+    }
+    else {
+      console.error("error in adding note:", data.error);
+    }
+  }
+  const editNote = async(id, title,description,tag) => {
+    
+      // API Call 
+      const token = localStorage.getItem("authToken");
+      const response = await fetch(`http://localhost:5000/api/notes/update/${id}`, {
+        method: 'PUT',
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": token
+        },
+        body: JSON.stringify({title, description, tag})
+      });
+      const json = await response.json(); 
+  
+       let newNotes = JSON.parse(JSON.stringify(notes))
+      // Logic to edit in client
+      for (let index = 0; index < newNotes.length; index++) {
+        const element = newNotes[index];
+        if (element._id === id) {
+          newNotes[index].title = title;
+          newNotes[index].description = description;
+          newNotes[index].tag = tag; 
+          break; 
+        }
+      }  
+      setNotes(newNotes);
+    }
+    // end
+  
 
-    const addNote=  (title,description,tag) => {
-      //to do api call to save note
-      setNotes(notes.push(note))
-    }
-    const updateNote =()=>{
-      //api call to update
-    }
+  const deleteNote = async (id) => {
+    //api call to delete
+    const token = localStorage.getItem("authToken");
+    const new_note = notes.filter((note) => { return note._id !== id })
+    setNotes(new_note);
 
-    const deleteNote =()=>{
-      //api call to delete
+    const response = await fetch(`http://localhost:5000/api/notes/delete/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": token
+      },
     }
+    )
+    const json = response.json(); 
+  }
+
 
 
   return (
-    <notesContext.Provider value={{notes,setNotes}}>
-        {props.children}
+    <notesContext.Provider value={{ notes, addNote, fetchAllNotes, deleteNote, editNote }}>
+      {props.children}
     </notesContext.Provider>
 
   )
