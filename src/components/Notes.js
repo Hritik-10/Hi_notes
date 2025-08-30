@@ -1,10 +1,12 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import notesContext from '../context/notesContext';
 import Noteitem from './Noteitem';
+import userContext from '../context/userContext';
 
 const Notes = () => {
     const context = useContext(notesContext);
     const { notes, fetchAllNotes, editNote } = context;
+    const {showToast} =useContext(userContext);
 
     useEffect(() => {
         fetchAllNotes();
@@ -20,7 +22,14 @@ const Notes = () => {
     }
 
     const handleClick = (e) => {
-        console.log("✅ handleClick triggered!", note);
+        if(note.etitle.length < 3 ){
+            showToast("title should have min 3 characters")
+            return;
+        }else if( note.edescription.length < 5){
+            showToast("title should have min 5 characters")
+            return;
+        }
+        
         editNote(note.id, note.etitle, note.edescription, note.etag);
         refClose.current.click();
     }
@@ -65,7 +74,7 @@ const Notes = () => {
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="description" className="form-label">Description</label>
-                                        <input type="text" className="form-control" id="edescription" name="edescription" value={note.edescription} onChange={onChange} minLength={5} required />
+                                        <textarea type="text" className="form-control" id="edescription" name="edescription" value={note.edescription} onChange={onChange} minLength={5} required />
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="tag" className="form-label">Tag</label>
@@ -77,7 +86,7 @@ const Notes = () => {
                         </div>
                         <div className="modal-footer">
                             <button ref={refClose} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button disabled={note.etitle.length < 5 || note.edescription.length < 5} onClick={handleClick} type="button" className="btn btn-primary">Update Note</button>
+                            <button disabled={note.etitle.length < 3 || note.edescription.length < 5} onClick={handleClick} type="button" className="btn btn-primary">Update Note</button>
                         </div>
                     </div>
                 </div>

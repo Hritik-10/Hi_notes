@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import userContext from '../context/userContext';
 import Toast from './Toast';
@@ -24,9 +24,25 @@ const Login = () => {
         }
     }
 
+    const [toastMessage, setToastMessage] = useState("");
+
+    useEffect(() => {
+        // ✅ Retrieve the stored toast message
+        const message = localStorage.getItem("toastMessage");
+        if (message) {
+            setToastMessage(message);
+            setTimeout(() => {
+                setToastMessage("");
+                localStorage.removeItem("toastMessage"); // Remove after display
+            }, 3000); 
+        }
+    }, []);
+
+
     return (
         <>
             <section className="vh-100 d-flex flex-column">
+            {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage("")} />}
                 <img
                     src="HB_logo.png"
                     className="position-absolute top-0 start-0 m-4"

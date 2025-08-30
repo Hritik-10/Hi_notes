@@ -1,10 +1,12 @@
 import notesContext from "../context/notesContext";
 
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import userContext from "../context/userContext";
 
 const NoteState = (props) => {
 
   const [notes, setNotes] = useState([]);
+  const {showToast} =useContext(userContext);
                
   const fetchAllNotes = async () => {
     const token = localStorage.getItem("authToken");
@@ -41,9 +43,11 @@ const NoteState = (props) => {
         "__v": 0
       }
       setNotes(notes.concat(note));
+      showToast("Note added");
     }
     else {
-      console.error("error in adding note:", data.error);
+      // console.error("error in adding note:", data.error);
+      showToast("error in adding note!");
     }
   }
   const editNote = async(id, title,description,tag) => {
@@ -72,6 +76,8 @@ const NoteState = (props) => {
         }
       }  
       setNotes(newNotes);
+      if(json.success)
+        showToast("Note updated"); 
     }
     // end
   
@@ -90,9 +96,13 @@ const NoteState = (props) => {
       },
     }
     )
-    const json = response.json(); 
+    const json = await response.json(); 
+    
+    if(json.success){
+      showToast("Note deleted successfully");
+    }
+      
   }
-
 
 
   return (

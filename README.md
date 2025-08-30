@@ -11,5 +11,6 @@ npm nodemon index.js
 
 
 to run both:
--npm run start
--npx nodemon backend/index.js
+    -npm run start
+    -npx nodemon backend/index.js
+use command: npm run both

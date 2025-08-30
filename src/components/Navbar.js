@@ -11,7 +11,7 @@ const Navbar = () => {
                     className="position-absolute  top-5 start-0 "
                     style={{ borderRadius: "50%", height: "50px", width: "50px", objectFit: "cover" }}
                 />
-         <Link className="navbar-brand mx-5" to="/"  style={{ fontFamily: "cursive" }}>Hi_notes</Link>
+         <Link className="navbar-brand mx-5" to="/"  style={{ fontFamily: "cursive" }}>Hi_Notes</Link>
          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
          </button>
@@ -20,7 +20,7 @@ const Navbar = () => {
             <ul className="navbar-nav mr-auto ">
 
                <li className="nav-item active">
-                  <Link className="nav-link" to="/">Home </Link>
+                  <Link className="nav-link" to="/home">Home </Link>
                </li>
                <li className="nav-item">
                   <Link className="nav-link" to="/About">About</Link>
