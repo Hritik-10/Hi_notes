@@ -11,7 +11,7 @@ router.get('/fetchallnotes', fetchuser, async (req, res) => {
 
     //1. get all the notes
     try {
-        const notes = await Notes.find({ user: req.user.id });
+        const notes = await Notes.find({ user: req.user.id }); //fetching only notes having userid of created user.
         res.json(notes);
     } catch (error) {
         res.status(500).send("Internal server error");
@@ -69,7 +69,7 @@ router.put('/update/:id', fetchuser,[
     }
     //now the note exist
     const updated_note= await Notes.findByIdAndUpdate(req.params.id, {$set:new_note},{new:true})
-    res.json({updated_note});
+    res.json({success:true, updated_note:updated_note});
 
     } catch (err) {
         res.status(500).send("Internal server error");
@@ -92,7 +92,7 @@ router.delete('/delete/:id', fetchuser, async (req,res)=>{
     }
     //now the note exist
     const deleted_note= await Notes.findByIdAndDelete(req.params.id)
-    res.json({ "Success": "Note has been deleted" ,note: deleted_note});
+    res.json({ success: true ,note: deleted_note});
 
     } catch (err) {
         res.status(500).send("Internal server error");
