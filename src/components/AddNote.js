@@ -24,6 +24,7 @@ const AddNote = () => {
         return;
       }
       addNote(note.title,note.description,note.tag);
+      setNote({title:'',description:'',tag:'default'});
     }
 
     return (
@@ -32,15 +33,15 @@ const AddNote = () => {
         <form>
           <div className="form-group mt-3">
             <label htmlFor="title">Title</label>
-            <input type="text" className="form-control" id="title" name="title" aria-describedby="emailHelp" onChange={onchange} placeholder="Enter title" required />
+            <input type="text" className="form-control" id="title" name="title" aria-describedby="emailHelp" value={note.title} onChange={onchange} placeholder="Enter title" required />
           </div>
           <div className="form-group mt-3">
             <label htmlFor="p">Description</label>
-            <textarea type="text" className="form-control" id="description" name="description" onChange={onchange} placeholder="Enter description" required/>
+            <textarea type="text" className="form-control" id="description" name="description" value={note.description} onChange={onchange} placeholder="Enter description" required/>
           </div>
           <div className="form-group mt-3">
           <label htmlFor="tag">tag</label>
-            <input type="text" className="form-control" id="tag"  name="tag" onChange={onchange} placeholder="Enter tag"/>
+            <input type="text" className="form-control" id="tag"  name="tag" value={note.tag} onChange={onchange} placeholder="Enter tag"/>
             {/* <label className="form-check-label" for="exampleCheck1">Check me out</label> */}
           </div>
           {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage("")} />}
