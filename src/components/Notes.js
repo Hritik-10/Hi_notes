@@ -5,7 +5,7 @@ import userContext from '../context/userContext';
 
 const Notes = () => {
     const context = useContext(notesContext);
-    const { notes, fetchAllNotes, editNote } = context;
+    const { notes, fetchAllNotes, editNote, filteredNotes } = context;
     const {showToast} =useContext(userContext);
 
     useEffect(() => {
@@ -41,11 +41,18 @@ const Notes = () => {
     return (
         <>
             <div className="container">
-                <h2> My notes [{notes.length}] </h2>
+                <h2> My notes [{filteredNotes.length}] </h2>
                 <div className='row'>
-                    {notes.map((note) => {
+                     {filteredNotes.length === 0 ? (
+                        <p>No notes found...</p>
+                    ) : (
+                        filteredNotes.map((note) => {
+                            return <Noteitem key={note._id} updateNote={updateNote} note={note} />
+                        })
+                    )}
+                    {/* {notes.map((note) => {
                         return <Noteitem key={note._id} updateNote={updateNote} note={note} />
-                    })}
+                    })} */}
                 </div>
             </div>
 
@@ -59,9 +66,6 @@ const Notes = () => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="exampleModalLabel">Update Note</h5>
-                            {/* <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button> */}
                         </div>
                         <div className="modal-body">
 

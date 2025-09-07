@@ -7,6 +7,7 @@ const NoteState = (props) => {
 
   const [notes, setNotes] = useState([]);
   const {showToast} =useContext(userContext);
+  const [filteredNotes, setFilteredNotes] = useState([]);
                
   const fetchAllNotes = async () => {
     const token = localStorage.getItem("authToken");
@@ -19,6 +20,7 @@ const NoteState = (props) => {
     })
     const initial_notes = await resp.json();
     setNotes(initial_notes);
+    setFilteredNotes(initial_notes);
   }
 
   const addNote = async (title, description, tag) => {
@@ -42,7 +44,9 @@ const NoteState = (props) => {
         "tag": data.tag,
         "__v": 0
       }
-      setNotes(notes.concat(note));
+      const updatedNotes = notes.concat(note);
+      setNotes(updatedNotes);
+      setFilteredNotes(updatedNotes); 
       showToast("Note added");
     }
     else {
@@ -76,6 +80,7 @@ const NoteState = (props) => {
         }
       }  
       setNotes(newNotes);
+      setFilteredNotes(newNotes);
       if(json.success)
         showToast("Note updated"); 
     }
@@ -87,6 +92,7 @@ const NoteState = (props) => {
     const token = localStorage.getItem("authToken");
     const new_note = notes.filter((note) => { return note._id !== id })
     setNotes(new_note);
+    setFilteredNotes(new_note);
 
     const response = await fetch(`http://localhost:5000/api/notes/delete/${id}`, {
       method: "DELETE",
@@ -101,12 +107,27 @@ const NoteState = (props) => {
     if(json.success){
       showToast("Note deleted successfully");
     }
-      
   }
+
+  const searchNotes = (query) => {
+    if (!query) {
+      setFilteredNotes(notes); // reset when empty
+    } else {
+      const lower = query.toLowerCase();
+      const filtered = notes.filter(
+        note =>
+          note.title.toLowerCase().includes(lower) ||
+          note.description.toLowerCase().includes(lower) ||
+          note.tag.toLowerCase().includes(lower)
+      );
+      setFilteredNotes(filtered);
+    }
+  };
+
 
 
   return (
-    <notesContext.Provider value={{ notes, addNote, fetchAllNotes, deleteNote, editNote }}>
+    <notesContext.Provider value={{ notes, addNote, fetchAllNotes, deleteNote, editNote, searchNotes, filteredNotes }}>
       {props.children}
     </notesContext.Provider>
 
